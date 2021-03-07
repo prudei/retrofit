@@ -1,5 +1,7 @@
-package ru.geekbrains;
+package ru.geekbrains.positiveTest;
 
+import lombok.SneakyThrows;
+import okhttp3.ResponseBody;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import retrofit2.Response;
@@ -7,6 +9,7 @@ import retrofit2.Retrofit;
 import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.dto.Category;
 import ru.geekbrains.service.CategoryService;
+import ru.geekbrains.service.ProductService;
 import ru.geekbrains.util.RetrofitUtils;
 
 import java.io.IOException;
@@ -15,12 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static ru.geekbrains.base.enums.CategoryType.*;
 
 
-public class CategoryTests {
+public class GetTests {
     static CategoryService categoryService;
+    static ProductService productService;
 
     @BeforeAll
     static void beforeAll() {
         categoryService = RetrofitUtils.getRetrofit().create(CategoryService.class);
+        productService = RetrofitUtils.getRetrofit().create(ProductService.class);
     }
 
     @Test
@@ -43,14 +48,12 @@ public class CategoryTests {
         assertThat(response.body().getTitle()).isEqualTo(ELECTRONICS.getCategory());
     }
 
+    @SneakyThrows
     @Test
-    public void getCategoryNegativeTest () throws IOException {
-        Response<Category> response = categoryService
-                .getCategory(3)
+    void getAllProductsTest() {
+        retrofit2.Response<ResponseBody> response = productService
+                .getAllProducts()
                 .execute();
-        assertThat(response.code()).isEqualTo(404);
+        assertThat(response.isSuccessful()).isTrue();
     }
-
-
-
 }

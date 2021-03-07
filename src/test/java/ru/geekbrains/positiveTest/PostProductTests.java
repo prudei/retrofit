@@ -1,4 +1,4 @@
-package ru.geekbrains.put;
+package ru.geekbrains.positiveTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -9,24 +9,25 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.geekbrains.base.enums.CategoryType;
+import ru.geekbrains.dto.ErrorBody;
 import ru.geekbrains.dto.Product;
 import ru.geekbrains.service.ProductService;
 import ru.geekbrains.util.RetrofitUtils;
 
+import javax.xml.ws.Response;
+
+import java.io.DataInput;
 import java.io.IOException;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class PutProductTests {
+public class PostProductTests {
     Integer productId;
     Faker faker = new Faker();
     static ProductService productService;
     Product product;
-    Product product2;
-
-    String CheckTitle = faker.food().vegetable();
-    Integer CheckPrice = ((int) Math.random()*100+1);
+    Integer CheckPrice = (int)(Math.random()*1000+1);
+    String CheckTitle = faker.food().ingredient();
 
     @SneakyThrows
     @BeforeAll
@@ -34,37 +35,38 @@ public class PutProductTests {
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
     }
 
-    @SneakyThrows
     @BeforeEach
     void setUp () {
         product = new Product()
-                .withCategoryTitle(CategoryType.FOOD.getCategory())
-                .withPrice((int)(Math.random()*1000+1))
-                .withTitle(faker.food().ingredient());
-        retrofit2.Response<Product> response = productService
-                .createProduct(product)
-                .execute();
-
-        productId = response.body().getId();
-        product2 = new Product()
-                .withId(productId)
                 .withPrice(CheckPrice)
-                .withTitle(CheckTitle)
-                .withCategoryTitle(CategoryType.ELECTRONICS.getCategory());
-        assertThat(response.isSuccessful()).isTrue();
+                .withTitle(CheckTitle);
     }
 
     @SneakyThrows
     @Test
-    void putPositiveTest() {
-    retrofit2.Response<Product> response = productService
-        .modifyProduct(product2)
-        .execute();
-    assertThat(response.isSuccessful()).isTrue();
-    assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.ELECTRONICS.getCategory());
-    assertThat(response.body().getPrice()).isEqualTo(CheckPrice);
-    assertThat(response.body().getTitle()).isEqualTo(CheckTitle);
+    public void postCheckCreated201FoodTest () {
+        retrofit2.Response<Product> response = productService
+                .createProduct(product.withCategoryTitle(CategoryType.FOOD.getCategory()))
+                .execute();
+        productId = response.body().getId();
+        assertThat(response.code()).isEqualTo(201);
+        assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.FOOD.getCategory());
+        assertThat(response.body().getTitle()).isEqualTo(CheckTitle);
     }
+
+    @SneakyThrows
+    @Test
+    public void postCheckCreated201ElectronicTest () {
+        retrofit2.Response<Product> response = productService
+                .createProduct(product.withCategoryTitle(CategoryType.ELECTRONICS.getCategory()))
+                .execute();
+        productId = response.body().getId();
+        assertThat(response.code()).isEqualTo(201);
+        assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.ELECTRONICS.getCategory());
+        assertThat(response.body().getPrice()).isEqualTo(CheckPrice);
+    }
+
+
 
     @AfterEach
     void tearDown () {
@@ -77,4 +79,5 @@ public class PutProductTests {
             e.printStackTrace();
         }
     }
+
 }
