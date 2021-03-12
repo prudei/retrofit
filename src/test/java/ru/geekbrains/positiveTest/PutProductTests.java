@@ -10,7 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.dto.Product;
+import ru.geekbrains.java4.lesson6.db.dao.ProductsMapper;
 import ru.geekbrains.service.ProductService;
+import ru.geekbrains.util.DBUtils;
 import ru.geekbrains.util.RetrofitUtils;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class PutProductTests {
     Integer productId;
     Faker faker = new Faker();
     static ProductService productService;
+    static ProductsMapper productsMapper;
     Product product;
     Product product2;
 
@@ -31,6 +34,7 @@ public class PutProductTests {
     @SneakyThrows
     @BeforeAll
     static void beforeAll() {
+        productsMapper = DBUtils.getProductsMapper();
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
     }
 
@@ -53,6 +57,8 @@ public class PutProductTests {
                 .withTitle(CheckTitle)
                 .withCategoryTitle(CategoryType.ELECTRONICS.getCategory());
         assertThat(response.isSuccessful()).isTrue();
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getCategory_id())
+                .isEqualTo((long)CategoryType.FOOD.getId());
     }
 
     @SneakyThrows
@@ -65,6 +71,12 @@ public class PutProductTests {
     assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.ELECTRONICS.getCategory());
     assertThat(response.body().getPrice()).isEqualTo(CheckPrice);
     assertThat(response.body().getTitle()).isEqualTo(CheckTitle);
+    assertThat(productsMapper.selectByPrimaryKey((long)productId).getCategory_id())
+            .isEqualTo((long)CategoryType.ELECTRONICS.getId());
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getPrice())
+                .isEqualTo(CheckPrice);
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getTitle())
+                .isEqualTo(CheckTitle);
     }
 
 

@@ -11,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.dto.ErrorBody;
 import ru.geekbrains.dto.Product;
+import ru.geekbrains.java4.lesson6.db.dao.ProductsMapper;
 import ru.geekbrains.service.ProductService;
+import ru.geekbrains.util.DBUtils;
 import ru.geekbrains.util.RetrofitUtils;
 
 import javax.xml.ws.Response;
@@ -25,6 +27,7 @@ public class PostProductTests {
     Integer productId;
     Faker faker = new Faker();
     static ProductService productService;
+    static ProductsMapper productsMapper;
     Product product;
     Integer CheckPrice = (int)(Math.random()*1000+1);
     String CheckTitle = faker.food().ingredient();
@@ -32,6 +35,7 @@ public class PostProductTests {
     @SneakyThrows
     @BeforeAll
     static void beforeAll() {
+        productsMapper = DBUtils.getProductsMapper();
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
     }
 
@@ -52,6 +56,10 @@ public class PostProductTests {
         assertThat(response.code()).isEqualTo(201);
         assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.FOOD.getCategory());
         assertThat(response.body().getTitle()).isEqualTo(CheckTitle);
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getCategory_id())
+                .isEqualTo((long)CategoryType.FOOD.getId());
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getTitle())
+                .isEqualTo(CheckTitle);
     }
 
     @SneakyThrows
@@ -64,20 +72,17 @@ public class PostProductTests {
         assertThat(response.code()).isEqualTo(201);
         assertThat(response.body().getCategoryTitle()).isEqualTo(CategoryType.ELECTRONICS.getCategory());
         assertThat(response.body().getPrice()).isEqualTo(CheckPrice);
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getCategory_id())
+                .isEqualTo((long)CategoryType.ELECTRONICS.getId());
+        assertThat(productsMapper.selectByPrimaryKey((long)productId).getPrice())
+                .isEqualTo(CheckPrice);
     }
 
 
 
     @AfterEach
     void tearDown () {
-        try {
-            retrofit2.Response<ResponseBody> response = productService
-                    .deleteProduct(productId)
-                    .execute();
-            assertThat(response.isSuccessful()).isTrue();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        DBUtils.getProductsMapper().deleteByPrimaryKey((long)productId);
     }
 
 }

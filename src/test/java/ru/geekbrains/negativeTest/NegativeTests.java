@@ -10,24 +10,33 @@ import retrofit2.Response;
 import ru.geekbrains.base.enums.CategoryType;
 import ru.geekbrains.dto.Category;
 import ru.geekbrains.dto.Product;
+import ru.geekbrains.java4.lesson6.db.dao.CategoriesMapper;
+import ru.geekbrains.java4.lesson6.db.dao.ProductsMapper;
+import ru.geekbrains.java4.lesson6.db.model.ProductsExample;
 import ru.geekbrains.service.CategoryService;
 import ru.geekbrains.service.ProductService;
+import ru.geekbrains.util.DBUtils;
 import ru.geekbrains.util.RetrofitUtils;
 
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class NegativeTests {
 
     static ProductService productService;
     static CategoryService categoryService;
+    static ProductsMapper productsMapper;
+    static CategoriesMapper categoriesMapper;
     Product product;
     Faker faker = new Faker();
 
     @SneakyThrows
     @BeforeAll
     static void beforeAll() {
+        productsMapper = DBUtils.getProductsMapper();
+        categoriesMapper = DBUtils.getCategoriesMapper();
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
         categoryService = RetrofitUtils.getRetrofit().create(CategoryService.class);
     }
@@ -48,6 +57,7 @@ public class NegativeTests {
                     .createProduct(product.withId(1))
                     .execute();
             assertThat(response.code()).isEqualTo(400);
+            //assertThat(productsMapper.selectByPrimaryKey())
             //ResponseBody resp2 = response.errorBody();
             //ErrorBody errorBod = objectMapper.w
             //assertThat(errorBod.message).isEqualTo("Id must be null for new entity");
@@ -59,6 +69,7 @@ public class NegativeTests {
                 .getCategory(0)
                 .execute();
         assertThat(response.code()).isEqualTo(404);
+        assertThat(categoriesMapper.selectByPrimaryKey(0)).isEqualTo(null);
     }
 
     @SneakyThrows
@@ -86,6 +97,9 @@ public class NegativeTests {
                 .createProduct(product.withCategoryTitle(null))
                 .execute();
         assertThat(response.code()).isEqualTo(403);
+        ProductsExample example = new ProductsExample();
+        example.createCriteria().andCategory_idEqualTo(null);
+        assertThat(productsMapper.countByExample(example)).isEqualTo(0);
     }
 
     @SneakyThrows
@@ -95,6 +109,9 @@ public class NegativeTests {
                 .createProduct(product.withCategoryTitle(CategoryType.FOOD.getCategory()).withTitle(null))
                 .execute();
         assertThat(response.code()).isEqualTo(403);
+        ProductsExample example = new ProductsExample();
+        example.createCriteria().andTitleEqualTo(null);
+        assertThat(productsMapper.countByExample(example)).isEqualTo(0);
     }
 }
 
