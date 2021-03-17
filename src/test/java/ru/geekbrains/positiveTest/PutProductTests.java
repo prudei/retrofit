@@ -2,6 +2,8 @@ package ru.geekbrains.positiveTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import okhttp3.ResponseBody;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +38,7 @@ public class PutProductTests {
     static void beforeAll() {
         productsMapper = DBUtils.getProductsMapper();
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
+        RestAssured.filters(new AllureRestAssured());
     }
 
     @SneakyThrows

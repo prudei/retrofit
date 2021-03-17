@@ -1,6 +1,8 @@
 package ru.geekbrains.negativeTest;
 
 import com.github.javafaker.Faker;
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import okhttp3.ResponseBody;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,6 +41,7 @@ public class NegativeTests {
         categoriesMapper = DBUtils.getCategoriesMapper();
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
         categoryService = RetrofitUtils.getRetrofit().create(CategoryService.class);
+        RestAssured.filters(new AllureRestAssured());
     }
 
     @SneakyThrows

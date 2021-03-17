@@ -1,5 +1,7 @@
 package ru.geekbrains.positiveTest;
 
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
 import lombok.SneakyThrows;
 import okhttp3.ResponseBody;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +28,7 @@ public class GetTests {
     static void beforeAll() {
         categoryService = RetrofitUtils.getRetrofit().create(CategoryService.class);
         productService = RetrofitUtils.getRetrofit().create(ProductService.class);
+        RestAssured.filters(new AllureRestAssured());
     }
 
     @Test
