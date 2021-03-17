@@ -2,6 +2,9 @@ package ru.geekbrains.positiveTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
@@ -49,6 +52,9 @@ public class PostProductTests {
                 .withTitle(CheckTitle);
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "POST запрос")
+    @Step("Проверка создания нового продукта с категорией FOOD. Код 201")
     @SneakyThrows
     @Test
     public void postCheckCreated201FoodTest () {
@@ -65,6 +71,9 @@ public class PostProductTests {
                 .isEqualTo(CheckTitle);
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "POST запрос")
+    @Step("Проверка создания нового продукта с категорией Electronics. Код 201")
     @SneakyThrows
     @Test
     public void postCheckCreated201ElectronicTest () {

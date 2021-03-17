@@ -1,5 +1,8 @@
 package ru.geekbrains.positiveTest;
 
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
@@ -31,6 +34,9 @@ public class GetTests {
         RestAssured.filters(new AllureRestAssured());
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "GET запрос")
+    @Step("Проверка, что категория FOOD имеет id=1")
     @Test
     public void getCategoryPositiveFoodTest () throws IOException {
         Response<Category> response = categoryService
@@ -41,6 +47,9 @@ public class GetTests {
         assertThat(response.body().getTitle()).isEqualTo(FOOD.getCategory());
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "GET запрос")
+    @Step("Проверка, что категория Electronics имеет id=2")
     @Test
     public void getCategoryPositiveElectronicsTest () throws IOException {
         Response<Category> response = categoryService
@@ -51,6 +60,9 @@ public class GetTests {
         assertThat(response.body().getTitle()).isEqualTo(ELECTRONICS.getCategory());
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "GET запрос")
+    @Step("Проверка, что можно получить все продукты")
     @SneakyThrows
     @Test
     void getAllProductsTest() {

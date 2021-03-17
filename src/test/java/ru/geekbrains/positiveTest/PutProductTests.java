@@ -2,6 +2,9 @@ package ru.geekbrains.positiveTest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
@@ -64,6 +67,9 @@ public class PutProductTests {
                 .isEqualTo((long)CategoryType.FOOD.getId());
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка изменения продукта. Код 200")
     @SneakyThrows
     @Test
     void putProductChangeTest() {
@@ -84,6 +90,9 @@ public class PutProductTests {
 
 
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка добавления продукта с категорией FOOD. Код 201")
     @SneakyThrows
     @Test
     void putProductInFoodCategoryCheck201Test() {
@@ -93,6 +102,9 @@ public class PutProductTests {
         assertThat(response.code()).isEqualTo(201);
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка, что при добавлении продукта без указания категории, сервер выдаст код 403")
     @SneakyThrows
     @Test
     void putProductWithNullCategoryTest() {
@@ -102,6 +114,9 @@ public class PutProductTests {
         assertThat(response.code()).isEqualTo(403);
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка, что при добавлении продукта без указания цены, сервер выдаст код 403")
     @SneakyThrows
     @Test
     void putProductWithNullPriceTest() {
@@ -111,6 +126,9 @@ public class PutProductTests {
         assertThat(response.code()).isEqualTo(403);
     }
 
+    @Epic(value = "Положительные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка, что при добавлении продукта без указания названия, сервер выдаст код 403")
     @SneakyThrows
     @Test
     void putProductWithNullTitileTest() {

@@ -1,6 +1,9 @@
 package ru.geekbrains.negativeTest;
 
 import com.github.javafaker.Faker;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import lombok.SneakyThrows;
@@ -53,6 +56,10 @@ public class NegativeTests {
                 .withTitle(faker.food().ingredient());
     }
 
+
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "POST запрос")
+    @Step("Проверка, что при добавлении продукта c указанием id, сервер выдаст код 400")
         @SneakyThrows
         @Test
         public void postNegativeTest () {
@@ -66,6 +73,9 @@ public class NegativeTests {
             //assertThat(errorBod.message).isEqualTo("Id must be null for new entity");
         }
 
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "GET запрос")
+    @Step("Проверка, припопытке получения продукта с указанием неверной категории, сервер выдаст код 404")
     @Test
     public void getCategoryNegativeTest () throws IOException {
         Response<Category> response = categoryService
@@ -75,6 +85,9 @@ public class NegativeTests {
         assertThat(categoriesMapper.selectByPrimaryKey(0)).isEqualTo(null);
     }
 
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "GET запрос")
+    @Step("Проверка, что при попытке удаления продукта с несуществующим id, сервер выдаст код 404")
     @SneakyThrows
     @Test
     void deleteNegativeTest () {
@@ -84,6 +97,9 @@ public class NegativeTests {
             assertThat(response.code()).isEqualTo(404);
     }
 
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "PUT запрос")
+    @Step("Проверка, что при добавлении продукта с указанием id, сервер выдаст код 400")
     @SneakyThrows
     @Test
     void putNegativeTest() {
@@ -93,6 +109,9 @@ public class NegativeTests {
         assertThat(response.code()).isEqualTo(400);
     }
 
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "POST запрос")
+    @Step("Проверка, что при добавлении продукта с указанием неверной категории, сервер выдаст код 403")
     @SneakyThrows
     @Test
     void postProductWithNullCategoryTest() {
@@ -105,6 +124,9 @@ public class NegativeTests {
         assertThat(productsMapper.countByExample(example)).isEqualTo(0);
     }
 
+    @Epic(value = "Негативные тесты")
+    @Feature(value = "POST запрос")
+    @Step("Проверка, что при добавлении продукта без указания названия, сервер выдаст код 403")
     @SneakyThrows
     @Test
     void postProductWithNullTitleTest() {
